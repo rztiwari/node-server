@@ -8,6 +8,7 @@ bundle.js
 
 # Dependency directories
 node_modules/
+.vscode
 
 # Optional npm cache directory
 .npm
