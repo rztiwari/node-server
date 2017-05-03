@@ -9,21 +9,18 @@ const jsonfile = require('jsonfile');
 // create application/json parser
 const jsonParser = bodyParser.json();
 
-const slideListFile = path.join(process.cwd() + '/data/slideList.json');
 const slideDataFile = path.join(process.cwd() + '/data/slideData.json');
 
 presetationRoute.get('/slideList', function(req, res) {
-  jsonfile.readFile(slideListFile, function(err, obj) {
+  jsonfile.readFile(slideDataFile, function(err, obj) {
+    var keys;
     res.set("Content-Type", "application/json");
     if (err) {
       res.status(500).json({error: err});
     }
 
-    if (obj && obj.data && obj.data.length > 0) {
-      res.status(200).json(obj);
-    } else {
-      res.status(200).json({data: []});
-    }
+    keys = Object.keys(obj) || [];
+    res.status(200).json({data: keys});
   });
 });
 
@@ -66,13 +63,6 @@ presetationRoute.delete('/slideData/:id', function(req, res) {
           res.status(500).json({error: err});
           return;
         }
-        fileListData = jsonfile.readFileSync(slideListFile);
-        if (fileListData && fileListData.data && fileListData.data.length > 0) {
-          fileListData.data = fileListData.data.filter(function(item) {
-            return item !== slideId;
-          });
-        }
-        jsonfile.writeFileSync(slideListFile, fileListData);
         res.status(200).json(delData);
       });
     } else {
@@ -124,30 +114,11 @@ presetationRoute.put('/slideData/:id', jsonParser, function(req, res) {
 });
 
 const writeDataToFile = function(json, slideId, req, res) {
-  let fileListData,
-    fileStats = fs.statSync(slideListFile);
-  if (fileStats && fileStats.size > 0) {
-    fileListData = jsonfile.readFileSync(slideListFile);
-  } else {
-    fileListData = {};
-  }
   jsonfile.writeFile(slideDataFile, json, function(err, success) {
     if (err) {
       res.status(500).json({error: err});
       return;
     }
-
-    if (fileListData && fileListData.data && Array.isArray(fileListData.data)) {
-      if (fileListData.data.indexOf(slideId) === -1) {
-        fileListData.data.push(slideId);
-      }
-    } else {
-      fileListData = {};
-      fileListData.data = [];
-      fileListData.data.push(slideId);
-    }
-
-    jsonfile.writeFileSync(slideListFile, fileListData);
 
     res.set("Content-Type", "application/json");
     res.status(200).json(req.body);
