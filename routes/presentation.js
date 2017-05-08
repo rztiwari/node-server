@@ -27,7 +27,8 @@ presetationRoute.get('/slideList', function(req, res) {
 presetationRoute.get('/slideData/:id', function(req, res) {
   let slideId = req.params && req.params['id']
     ? req.params['id']
-    : null;
+    : null,
+    slideContent;
   jsonfile.readFile(slideDataFile, function(err, obj) {
 
     res.set("Content-Type", "application/json");
@@ -36,10 +37,13 @@ presetationRoute.get('/slideData/:id', function(req, res) {
     }
 
     if (obj && slideId && obj[slideId]) {
-      res.status(200).json(obj[slideId]);
+      slideContent = obj[slideId];
+      slideContent.slideId = slideId;
     } else {
-      res.status(200).json({data: []});
+      slideContent = {};
+      slideContent.slideId = slideId;
     }
+    res.status(200).json(slideContent);
   });
 });
 
@@ -99,6 +103,7 @@ presetationRoute.put('/slideData/:id', jsonParser, function(req, res) {
   let slideId = req.params['id']
     ? req.params['id']
     : null;
+
   let fileStats = fs.statSync(slideDataFile);
   if (fileStats && fileStats.size > 0) {
     obj = jsonfile.readFileSync(slideDataFile);
