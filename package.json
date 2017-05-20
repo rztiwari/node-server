@@ -1,0 +1,25 @@
+{
+  "name": "node-server",
+  "version": "1.0.0",
+  "description": "A simple node server to provide data for presentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rztiwari/node-server.git"
+  },
+  "author": "Rajiv Tiwari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rztiwari/node-server/issues"
+  },
+  "homepage": "https://github.com/rztiwari/node-server#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "jsonfile": "^3.0.0"
+  }
+}
